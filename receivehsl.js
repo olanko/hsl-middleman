@@ -22,7 +22,6 @@ amqp.connect('amqp://192.168.0.2', function(err, conn) {
         ch.consume(q.queue, function(msg) {
             msg = JSON.parse(msg.content);
 
-            console.log(msg.topic);
             trams[msg.VP.veh] = msg;
 
             console.log(trams['RHKL00229']);
