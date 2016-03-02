@@ -24,7 +24,7 @@ amqp.connect('amqp://192.168.0.2', function(err, conn) {
 
             trams[msg.VP.veh] = msg;
 
-            console.log(trams['RHKL00205']);
+            //console.log(msg.VP.veh);
 
         }, {noAck: true});
       });
@@ -39,7 +39,7 @@ amqp.connect('amqp://192.168.0.2', function(err, conn) {
         ch.consume(q, function reply(msg) {
             ch.sendToQueue(msg.properties.replyTo,
                             new Buffer(JSON.stringify(trams)),
-                            {correlationId: msg.properties.correlationId});
+                            {correlationId: msg.properties.correlationId, contentType: "application/json"});
 
             ch.ack(msg);
         });
