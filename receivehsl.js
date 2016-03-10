@@ -1,8 +1,22 @@
 #!/usr/bin/env node
-
+var _ = require('lodash');
 var amqp = require('amqplib/callback_api');
 
 var trams = {};
+
+var cleanup = function () {
+//    console.log('cleanup');
+    if (!_.size(trams)) {
+        return;
+    }
+
+    _.forEach(trams, function (tram, key) {
+        if (tram.lastseen < Date.now() - 5 * 60 * 1000) {
+            delete trams[key];
+        }
+    });
+};
+setInterval(cleanup, 60 * 1000);
 
 amqp.connect('amqp://192.168.0.2', function(err, conn) {
   conn.createChannel(function(err, ch) {
@@ -23,6 +37,7 @@ amqp.connect('amqp://192.168.0.2', function(err, conn) {
             msg = JSON.parse(msg.content);
 
             trams[msg.VP.veh] = msg;
+            trams[msg.VP.veh].lastseen = Date.now();
 
             //console.log(msg.VP.veh);
 
