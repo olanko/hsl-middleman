@@ -4,7 +4,7 @@ var amqp = require('amqplib/callback_api');
 
 var trams = {};
 
-amqp.connect('amqp://192.168.0.2', function(err, conn) {
+amqp.connect('amqp://localhost', function(err, conn) {
   conn.createChannel(function(err, ch) {
     var ex = 'hsl_exchange';
 
