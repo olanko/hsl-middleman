@@ -37,7 +37,7 @@ amqp.connect('amqp://192.168.0.2', function(err, conn) {
         ch.assertQueue(q, {durable: false});
         console.log(' [hsl_positions] Awaiting RPC requests');
         ch.consume(q, function reply(msg) {
-            ch.sendToQueue('hsl_request_channel', new Buffer({ 'channel': '*' }));
+            ch.sendToQueue('hsl_request_channel', new Buffer(JSON.stringify({ 'channel': '*' })));
 
             ch.sendToQueue(msg.properties.replyTo,
                             new Buffer(JSON.stringify(trams)),
