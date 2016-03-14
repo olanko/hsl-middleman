@@ -61,11 +61,17 @@ amqp.connect('amqp://localhost', function(err, conn) {
         ch.assertQueue(q, {durable: false});
         console.log(' [hsl_positions] Awaiting RPC requests');
         ch.consume(q, function reply(msg) {
-            ch.sendToQueue('hsl_request_channel', new Buffer(JSON.stringify({ 'channel': '*' })));
+            ch.sendToQueue('hsl_request_channel',
+                    new Buffer(JSON.stringify({ 'channel': '*' })),
+                    {noAck: true}
+                );
 
             ch.sendToQueue(msg.properties.replyTo,
-                            new Buffer(JSON.stringify(trams)),
-                            {correlationId: msg.properties.correlationId, contentType: "application/json"});
+                    new Buffer(JSON.stringify(trams)),
+                    {
+                        correlationId: msg.properties.correlationId,
+                        contentType: "application/json"
+                    });
 
             ch.ack(msg);
         });
