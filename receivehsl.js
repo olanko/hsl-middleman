@@ -19,7 +19,15 @@ var cleanup = function () {
 setInterval(cleanup, 60 * 1000);
 
 amqp.connect('amqp://localhost', function(err, conn) {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
   conn.createChannel(function(err, ch) {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
     var ex = 'hsl_exchange';
 
     ch.assertExchange(ex, 'direct', {durable: false});
@@ -47,6 +55,10 @@ amqp.connect('amqp://localhost', function(err, conn) {
 
     /* RPC to return latest tram positions */
     conn.createChannel(function(err, ch) {
+        if (err) {
+          console.error(err);
+          process.exit(1);
+        }
         var q = 'hsl_positions';
 
         ch.assertQueue(q, {durable: false});
