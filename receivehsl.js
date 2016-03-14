@@ -23,12 +23,18 @@ amqp.connect('amqp://localhost', function(err, conn) {
     console.error(err);
     process.exit(1);
   }
+
+  conn.on('close', function () {
+    console.error('Connection closed');
+    process.exit(1);
+  });
+  
   conn.createChannel(function(err, ch) {
     if (err) {
       console.error(err);
       process.exit(1);
     }
-    
+
     ch.assertQueue('', {exclusive: true}, function (err, q) {
         if (err) {
             console.error(err);
