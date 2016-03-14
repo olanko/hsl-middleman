@@ -28,10 +28,7 @@ amqp.connect('amqp://localhost', function(err, conn) {
       console.error(err);
       process.exit(1);
     }
-    var ex = 'hsl_exchange';
-
-    ch.assertExchange(ex, 'direct', {durable: false});
-
+    
     ch.assertQueue('', {exclusive: true}, function (err, q) {
         if (err) {
             console.error(err);
@@ -39,7 +36,7 @@ amqp.connect('amqp://localhost', function(err, conn) {
         }
 
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q.queue);
-        ch.bindQueue(q.queue, ex, 'vehicledata');
+        ch.bindQueue(q.queue, 'hsl_exchange', 'vehicledata');
 
         ch.consume(q.queue, function(msg) {
             msg = JSON.parse(msg.content);
